@@ -82,7 +82,7 @@ my_cmap = ListedColormap(my_cmap)
 def tensor_to_image(t):
     return t.permute(2,1,0).squeeze()
 
-def plot_lineup(im, ms=None, gt=None, figsize=None, ax=None):
+def plot_lineup(im, ms=None, gt=None, figsize=None, ax=None, title=''):
     if not figsize:
         figsize = (20,20)
     if not ax:
@@ -102,7 +102,8 @@ def plot_lineup(im, ms=None, gt=None, figsize=None, ax=None):
                         origin='lower',
                         cmap='transparent_BuPu',
                        )
-    
+    ax.set_title(title)
+
 def dataset_samples(dataset):
     print("Dataset size =", len(dataset))
     figure = plt.figure(figsize=(20, 20))

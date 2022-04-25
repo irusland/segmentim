@@ -54,6 +54,7 @@ class InriaImageDataset(Dataset):
         debug=False,
         crop_tensor=False,
         labeled=True,
+        scale=1,
     ):
         self.debug = debug
         self.base_path = Path(base_path)
@@ -74,6 +75,7 @@ class InriaImageDataset(Dataset):
         image_names = os.listdir(self.img_dir)
         label_names = os.listdir(self.label_dir)
         
+        self._scale = scale
         self._labeled = labeled
         if self._labeled:
             assert image_names == label_names
@@ -85,6 +87,9 @@ class InriaImageDataset(Dataset):
 
         for img_name in self.image_names:
             width, height = imagesize.get(self.img_dir / img_name)
+            width *= scale
+            height *= scale
+            
             if max_size:
                 max_width, max_height = max_size
             else:
@@ -118,6 +123,11 @@ class InriaImageDataset(Dataset):
             print('open', path)
         start = time.time()
         image = Image.open(path)
+        w, h = image.size
+        if self._scale != 1:
+            newsize = (w*self._scale, h*self._scale)
+            image = image.resize(newsize)
+
         if self.debug:
             print('Read time', time.time() - start)
         return image
